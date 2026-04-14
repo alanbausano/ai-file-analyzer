@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pandas
+langgraph
+langchain-groq
+python-multipart
+pydantic-settings
+duckdb
+openpyxl
+langgraph-checkpoint-sqlite
