@@ -39,7 +39,8 @@ async def upload_files(files: List[UploadFile] = File(...)):
         # Integrity Check & DataFrame Loading
         try:
             if file.filename.endswith('.csv'):
-                df = pd.read_csv(file_path)
+                # Dynamically infer the separator (handles ',', ';', '\t') natively
+                df = pd.read_csv(file_path, sep=None, engine='python')
             else:
                 df = pd.read_excel(file_path)
         except Exception as e:

@@ -50,6 +50,11 @@ export default function Home() {
     setShowConfirmModal(true);
   };
 
+  const totalRowCount = snapshots.reduce((acc, curr) => acc + curr.row_count, 0);
+  const totalMemoryMb = snapshots.reduce((acc, curr) => acc + curr.memory_mb, 0).toFixed(4);
+  const domains = Array.from(new Set(snapshots.map(s => s.profile?.domain).filter(Boolean)));
+  const domainDisplay = domains.length > 1 ? "Multiple Domains" : (domains[0] || "Unknown");
+
   return (
     <main className="flex h-screen bg-zinc-950 text-zinc-200 overflow-hidden font-sans">
       {/* Left Main Content */}
@@ -87,15 +92,15 @@ export default function Home() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 shadow-sm">
                   <p className="text-zinc-400 text-sm font-medium mb-1">Total Rows</p>
-                  <p className="text-3xl font-bold text-zinc-100">{snapshots[0].row_count.toLocaleString()}</p>
+                  <p className="text-2xl font-bold text-zinc-100 truncate" title={totalRowCount.toLocaleString()}>{totalRowCount.toLocaleString()}</p>
                 </div>
                 <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 shadow-sm">
                   <p className="text-zinc-400 text-sm font-medium mb-1">Data Domain</p>
-                  <p className="text-3xl font-bold text-zinc-100">{snapshots[0].profile?.domain || "Unknown"}</p>
+                  <p className="text-2xl font-bold text-zinc-100 truncate" title={domainDisplay}>{domainDisplay}</p>
                 </div>
                 <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 shadow-sm">
                   <p className="text-zinc-400 text-sm font-medium mb-1">Memory Allocation</p>
-                  <p className="text-3xl font-bold text-zinc-100">{snapshots[0].memory_mb} MB</p>
+                  <p className="text-2xl font-bold text-zinc-100 truncate" title={`${totalMemoryMb} MB`}>{totalMemoryMb} MB</p>
                 </div>
               </div>
             </section>
