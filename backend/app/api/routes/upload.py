@@ -58,6 +58,10 @@ async def upload_files(files: List[UploadFile] = File(...)):
         # 3. Semantic Schema Discovery (Profiling)
         profile_data = profile_dataframe(df)
         
+        # Override generated chart titles to lock directly to the exact file identity mapping
+        if profile_data.get("chart_config"):
+            profile_data["chart_config"]["title"] = file.filename
+            
         # 4. Construct Response using Pydantic models mapping
         metadata_response = FileMetadataResponse(
             filename=file.filename,

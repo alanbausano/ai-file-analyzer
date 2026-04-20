@@ -8,9 +8,10 @@ import Toast from "@/components/ui/Toast";
 
 interface FileUploaderProps {
   onUploadSuccess: (snapshots: any[]) => void;
+  existingFilenames?: string[];
 }
 
-export default function FileUploader({ onUploadSuccess }: FileUploaderProps) {
+export default function FileUploader({ onUploadSuccess, existingFilenames = [] }: FileUploaderProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [isError, setIsError] = useState(false);
@@ -18,6 +19,16 @@ export default function FileUploader({ onUploadSuccess }: FileUploaderProps) {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const files = Array.from(e.target.files);
+    
+    // Strict Duplicate Validation
+    const duplicates = files.filter(f => existingFilenames.includes(f.name));
+    if (duplicates.length > 0) {
+      setIsError(true);
+      setToastMessage(`File already uploaded: ${duplicates[0].name}`);
+      setTimeout(() => setToastMessage(""), 3000);
+      e.target.value = "";
+      return;
+    }
     
     const formData = new FormData();
     files.forEach((file) => formData.append("files", file));
@@ -53,7 +64,7 @@ export default function FileUploader({ onUploadSuccess }: FileUploaderProps) {
         <input type="file" multiple accept=".csv,.xlsx,.xls" className="hidden" onChange={handleFileChange} disabled={isUploading} />
       </label>
 
-      <Toast message={toastMessage} type={isError ? "error" : "success"} position="bottom-right" />
+      <Toast message={toastMessage} type={isError ? "error" : "success"} position="top" />
     </div>
   );
 }
